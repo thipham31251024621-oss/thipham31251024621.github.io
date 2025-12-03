@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FocusED — Integrated</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/lucide-static@0.1.25/dist/style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<meta name="theme-color" content="#0ea5e9">
+
+<style>
+:root{
+  --accent:#0ea5e9;
+  --bg-1:linear-gradient(135deg,#60a5fa,#3b82f6);
+  --glass-bg: rgba(255,255,255,0.12);
+  --glass-border: rgba(255,255,255,0.18);
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;
+}
+html,body{margin:0;height:100%;}
+body{
+  background:var(--bg-1);
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ================= AUTH MODAL (NEW DESIGN) ================= */
+
+#authModal{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.78);
+  backdrop-filter:blur(22px);
+  display:flex; align-items:center; justify-content:center;
+  z-index:99999;
+  padding:20px;
+}
+
+#authWrap{
+  width:100%; max-width:920px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06));
+  border-radius:28px;
+  overflow:hidden;
+  display:flex;
+  box-shadow:0 30px 80px rgba(0,0,0,0.45);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.auth-visual{
+  flex:1;
+  padding:42px 36px;
+  background:linear-gradient(135deg,#2b67e6,#6bc7ff);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.auth-visual h1{font-size:40px;margin-bottom:6px;}
+.auth-visual p{opacity:.95;margin-top:0;margin-bottom:16px;}
+
+.auth-form{
+  flex:1;
+  padding:36px;
+}
+.auth-card{
+  background:rgba(255,255,255,0.05);
+  padding:22px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.auth-title{
+  font-weight:800;
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+.input{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  margin-top:6px;
+}
+
+.btn{
+  padding:12px 16px;
+  border:none;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+  background:linear-gradient(135deg,#06b6d4,#0ea5e9);
+  color:#fff;
+}
+.btn.ghost{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+.switch-link{
+  color:#a8f0ff;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.small-muted{opacity:.85;font-size:13px;}
+
+@media(max-width:900px){
+  #authWrap{flex-direction:column;}
+  .auth-visual{min-height:160px;padding:26px;}
+  .auth-form{padding:20px;}
+}
+
+/* ==================== STREAK FIRE ==================== */
+
+.flame {
+  width:26px; height:26px;
+  background: radial-gradient(circle at 50% 60%, #ffb300 0%, #ff6a00 45%, #ff3b00 80%);
+  border-radius:50% 50% 35% 35%;
+  animation: flamePulse 1.4s infinite ease-in-out;
+  box-shadow:0 0 18px rgba(255,115,0,0.75);
+}
+
+@keyframes flamePulse {
+  0%{transform:scale(1); box-shadow:0 0 14px rgba(255,115,0,.7);}
+  50%{transform:scale(1.18); box-shadow:0 0 24px rgba(255,115,0,1);}
+  100%{transform:scale(1); box-shadow:0 0 14px rgba(255,115,0,.7);}
+}
+
+/* ============== BASIC APP LAYOUT (WILL CONTINUE IN PART 2) ============== */
+
+.header{
+  padding:18px 26px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.logo{
+  width:48px;height:48px;
+  background:rgba(255,255,255,0.12);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:20px;
+}
+.brand{display:flex;align-items:center;gap:12px;}
+.title{font-weight:800;font-size:22px;}
+
+.container{padding:20px;}
+.grid{display:flex;gap:20px;}
+.left,.right{flex:1;}
+.card{
+  background:rgba(255,255,255,0.06);
+  padding:20px;
+  border-radius:18px;
+  margin-bottom:20px;
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+/* continue in PART 2 */
+
+</style>
+</head>
+
+<body>
+
+<!-- ===================== AUTH MODAL ===================== -->
+<div id="authModal">
+  <div id="authWrap">
+
+    <div class="auth-visual">
+      <h1>FocusED</h1>
+      <p>Tập trung • Tích điểm • Đổi thưởng</p>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:18px;">
+        <div style="width:64px;height:64px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;">FE</div>
+        <div>
+          <div style="font-weight:700">Chưa có tài khoản?</div>
+          <div class="small-muted">Chỉ cần 10s để đăng ký!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-form">
+      <div class="auth-card">
+
+        <!-- ========== LOGIN FORM ========== -->
+        <div id="authLoginForm">
+          <div class="auth-title">Đăng nhập</div>
+          <div class="small-muted">Email</div>
+          <input id="loginEmail" type="email" class="input">
+
+          <div class="small-muted" style="margin-top:8px;">Mật khẩu</div>
+          <input id="loginPass" type="password" class="input">
+
+          <div style="margin-top:14px;display:flex;gap:10px;">
+            <button id="loginBtn" class="btn">Đăng nhập</button>
+            <button id="demoBtn" class="btn ghost">Đăng ký</button>
+          </div>
+
+          <div class="small-muted" style="margin-top:12px;text-align:right;">
+            Chưa có tài khoản?
+            <span id="openRegisterInline" class="switch-link">Đăng ký</span>
+          </div>
+        </div>
+
+        <!-- ========== REGISTER FORM (HIDDEN) ========== -->
+        <div id="authRegisterForm" style="display:none;">
+          <div class="auth-title">Đăng ký</div>
+
+          <div class="small-muted">Email</div>
+          <input id="regEmail" type="email" class="input">
+
+          <div class="small-muted" style="margin-top:8px;">Mật khẩu</div>
+          <input id="regPass1" type="password" class="input">
+
+          <div class="small-muted" style="margin-top:8px;">Nhập lại mật khẩu</div>
+          <input id="regPass2" type="password" class="input">
+
+          <div class="small-muted" style="margin-top:8px;">Tên hiển thị</div>
+          <input id="regName" type="text" class="input">
+
+          <div style="margin-top:14px;display:flex;gap:10px;">
+            <button id="registerBtn" class="btn">Tạo tài khoản</button>
+            <button id="backToLogin" class="btn ghost">Quay lại</button>
+          </div>
+
+          <div class="small-muted" style="margin-top:12px;text-align:right;">
+            Đã có tài khoản?
+            <span id="openLoginInline" class="switch-link">Đăng nhập</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== MAIN APP (CONTINUES IN PART 2) ==================== -->
+<div id="mainContent" style="display:none;">
+  <!-- ================= HEADER ================= -->
+  <div class="header">
+    <div class="brand">
+      <div class="logo">FE</div>
+      <div>
+        <div class="title">FocusED</div>
+        <div style="opacity:.85;font-size:13px;">Tập trung • Tích điểm • Đổi thưởng</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;">
+
+      <select id="theme" class="input" style="width:auto;padding:8px 12px;">
+        <option value="ocean">Ocean</option>
+        <option value="sunset">Sunset</option>
+        <option value="cyberpunk">Cyberpunk</option>
+        <option value="forest">Forest</option>
+        <option value="sakura">Sakura</option>
+      </select>
+
+      <button id="toggle-theme" class="btn ghost" style="padding:8px 12px;">Auto</button>
+
+      <!-- AVATAR + STREAK -->
+      <div style="display:flex;align-items:center;gap:12px;">
+
+        <div id="avatarBtn"
+             style="width:48px;height:48px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.1);cursor:pointer;">
+          <img id="avatarImg"
+               src="data:image/svg+xml;utf8,
+                <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
+                  <rect width='100%' height='100%' fill='%233b82f6'/>
+                  <text x='50%' y='50%' fill='white' font-size='80' font-family='Inter'
+                        text-anchor='middle' dominant-baseline='middle'>U</text>
+                </svg>"
+               style="width:100%;height:100%;object-fit:cover;">
+        </div>
+
+        <!-- STREAK FIRE (Duolingo style) -->
+        <div id="streakBox"
+             style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+          <div id="streakFlame" class="flame"></div>
+          <div id="streakCount" style="font-size:17px;font-weight:700;">0</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= Main Grid ================= -->
+  <div class="container">
+    <div class="grid">
+
+      <!-- ================= LEFT PANEL ================= -->
+      <div class="left">
+
+        <!-- PROFILE CARD -->
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:64px;height:64px;border-radius:14px;overflow:hidden;">
+              <img id="profilePic" src="" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+
+            <div>
+              <div id="displayName" style="font-weight:800;font-size:18px;">User</div>
+              <div style="opacity:.8;">Level <span id="levelBadge">1</span> •
+                <span id="fpCount">0</span> FP</div>
+              <div id="badgesRow" style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;"></div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <div style="opacity:.85;font-size:13px;">Tiến trình chuỗi tập trung</div>
+            <div style="height:10px;background:rgba(255,255,255,0.1);margin-top:6px;border-radius:10px;overflow:hidden;">
+              <div id="miniProgress"
+                   style="height:100%;width:0%;background:linear-gradient(90deg,#0ea5e9,#06b6d4);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUEST CARD -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-weight:800;">Quest hôm nay</div>
+            <div style="opacity:.8;font-size:13px;">Hoàn thành để nhận FP</div>
+          </div>
+
+          <div id="questsList" style="margin-top:10px;"></div>
+
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <input id="newQuestText" class="input" placeholder="Thêm quest mới">
+            <button id="addQuest" class="btn ghost">Thêm</button>
+          </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div class="card">
+          <div style="font-weight:800;margin-bottom:8px;">Thành tựu</div>
+          <div id="achievementsRow" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+        </div>
+
+      </div>
+
+      <!-- ================= RIGHT PANEL ================= -->
+      <div class="right">
+
+        <!-- ========= FOCUS TIMER ========= -->
+        <div class="card" style="display:flex;gap:16px;align-items:center;">
+
+          <!-- Progress Circle -->
+          <div style="position:relative;width:150px;height:150px;">
+            <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
+              <circle cx="50" cy="50" r="45"
+                      stroke="rgba(255,255,255,0.1)" stroke-width="8"
+                      fill="none"></circle>
+
+              <circle id="progressCircle" cx="50" cy="50" r="45"
+                      stroke="#0ea5e9" stroke-width="8" fill="none"
+                      stroke-dasharray="282.6" stroke-dashoffset="282.6"
+                      stroke-linecap="round"
+                      transform="rotate(-90 50 50)"></circle>
+            </svg>
+
+            <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                        display:flex;flex-direction:column;
+                        align-items:center;justify-content:center;">
+              <div id="timeLabel" style="font-size:26px;font-weight:700;">25:00</div>
+              <div id="progressSub" style="opacity:.85;margin-top:4px;font-size:13px;">Ready</div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div style="flex:1;">
+            <div class="small-muted">Môn học</div>
+            <select id="subjectSel" class="input">
+              <option>Toán Cao Cấp</option>
+              <option>Tiếng Anh</option>
+              <option>Luật Kinh Doanh</option>
+            </select>
+
+            <div class="small-muted" style="margin-top:10px;">Thời lượng</div>
+            <select id="durationSel" class="input">
+              <option value="25">25 phút</option>
+              <option value="50">50 phút</option>
+              <option value="15">15 phút</option>
+            </select>
+
+            <div style="display:flex;gap:12px;margin-top:12px;">
+              <button id="startBtn" class="btn">Bắt đầu</button>
+              <button id="stopBtn" class="btn ghost">Dừng</button>
+              <button id="skipBtn" class="btn ghost">Bỏ qua</button>
+            </div>
+
+            <div style="opacity:.85;font-size:13px;margin-top:8px;">
+              Chu kỳ Pomodoro: <span id="cycleInfo">0/4</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ========= STORE ========= -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-weight:800;">Cửa hàng</div>
+            <div style="opacity:.85;font-size:13px;">Đổi FP lấy vật phẩm</div>
+          </div>
+
+          <div id="storeItems"
+               style="display:flex;gap:10px;flex-wrap:wrap;"></div>
+        </div>
+
+        <!-- ========= LEADERBOARD ========= -->
+        <div class="card">
+          <div style="font-weight:800;margin-bottom:8px;">Bảng xếp hạng</div>
+          <ul id="leaderboardList"
+              style="list-style:none;padding:0;margin:0;"></ul>
+        </div>
+
+      </div><!-- END RIGHT -->
+
+    </div><!-- END GRID -->
+  </div><!-- END CONTAINER -->
+
+</div> <!-- END #mainContent -->
+
+<!-- ========== LEVEL-UP POPUP ========== -->
+<div id="big-popup"
+     style="display:none;position:fixed;inset:0;z-index:9999;
+            background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);
+            display:flex;align-items:center;justify-content:center;">
+  <div style="background:#fff;color:#000;padding:26px;border-radius:18px;
+              width:320px;text-align:center;">
+    <h2 id="bigTitle">Level Up!</h2>
+    <p id="bigDesc">Bạn vừa lên level mới</p>
+    <button id="bigClose"
+            style="margin-top:12px;padding:10px 16px;border:none;
+                   border-radius:10px;font-weight:700;cursor:pointer;
+                   background:#0ea5e9;color:#fff;">Tuyệt vời!</button>
+  </div>
+</div>
+
+<!-- ========== LOCK MODE OVERLAY ========== -->
+<div id="lockOverlay"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);
+            z-index:99999;backdrop-filter:blur(10px);align-items:center;
+            justify-content:center;">
+  <div style="background:#fff;color:#000;border-radius:14px;padding:26px;width:300px;text-align:center;">
+    <h3>Đang tập trung</h3>
+    <p>Không thể sử dụng ứng dụng cho đến khi phiên kết thúc.</p>
+    <button id="unlockBtn"
+            style="margin-top:12px;border:none;padding:10px 16px;
+                   border-radius:10px;background:#0ea5e9;color:#fff;
+                   font-weight:700;cursor:pointer;">Thoát</button>
+  </div>
+</div>
+
+<!-- AUDIO -->
+<audio id="audio-level" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+<audio id="audio-fail" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="audio-complete" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+<audio id="audio-lofi" src=""></audio>
+<!-- ==================== PART 3 / JS (paste after PART 2) ==================== -->
+<script>
+/* ========== App State & Constants ========== */
+const storageKey = 'fe_users_v2';
+const stateKey = 'fe_state';
+const streakKey = 'fe_streak';
+
+let users = JSON.parse(localStorage.getItem(storageKey) || '{}');
+let currentUser = null;
+let isAuthenticated = false;
+
+let quests = JSON.parse(localStorage.getItem('fe_quests') || '[]');
+let achievements = JSON.parse(localStorage.getItem('fe_achievements') || '[]');
+let subjectSeconds = {}; // per-user in saved user object
+let subject = '';
+let isFocusing = false;
+let focusTimer = null;
+let totalSec = 0;
+let targetSec = 25 * 60;
+let cycleCount = 0;
+let cyclesGoal = 4;
+let lastLevel = 0;
+
+// streak
+let streak = 0;
+let lastActiveDay = null;
+
+/* ========== Utility Helpers ========== */
+function safeGet(id){ return document.getElementById(id); }
+
+function showToast(msg, type='info'){
+  try{
+    const t = document.createElement('div');
+    t.innerText = msg;
+    t.style.position = 'fixed';
+    t.style.right = '18px';
+    t.style.bottom = (20 + Math.random()*60) + 'px';
+    t.style.background = (type==='warn'? 'rgba(239,68,68,0.95)' : type==='success'? 'rgba(34,197,94,0.95)' : 'rgba(59,130,246,0.95)');
+    t.style.color = '#fff';
+    t.style.padding = '10px 14px';
+    t.style.borderRadius = '10px';
+    t.style.zIndex = 120000;
+    document.body.appendChild(t);
+    if(window.gsap) gsap.from(t,{y:20,opacity:0,duration:.35});
+    setTimeout(()=> {
+      if(window.gsap) gsap.to(t,{opacity:0,y:-10,duration:.35, onComplete: ()=> t.remove()});
+      else t.remove();
+    }, 2300);
+  }catch(e){ console.warn('toast failed', e); }
+}
+
+function showBigPopup(title, desc){
+  const popup = safeGet('big-popup');
+  if(!popup) return;
+  safeGet('bigTitle') && (safeGet('bigTitle').innerText = title);
+  safeGet('bigDesc') && (safeGet('bigDesc').innerText = desc);
+  popup.style.display = 'flex';
+  try{ gsap.fromTo(popup,{opacity:0},{opacity:1,duration:.3}); }catch(e){}
+}
+function closeBigPopup(){ const popup = safeGet('big-popup'); if(!popup) return; try{ gsap.to(popup,{opacity:0,duration:.25, onComplete:()=> popup.style.display='none'}); } catch(e){ popup.style.display='none'; } }
+
+/* ========== Persistence ========== */
+function saveUsersToStorage(){ localStorage.setItem(storageKey, JSON.stringify(users)); }
+function saveAppState(){
+  // store non-user-global state
+  localStorage.setItem(stateKey, JSON.stringify({
+    subjectSeconds,
+    quests,
+    achievements
+  }));
+}
+
+function loadAppState(){
+  const st = JSON.parse(localStorage.getItem(stateKey) || '{}');
+  subjectSeconds = st.subjectSeconds || {};
+  quests = JSON.parse(localStorage.getItem('fe_quests') || JSON.stringify(quests));
+  achievements = JSON.parse(localStorage.getItem('fe_achievements') || JSON.stringify(achievements));
+}
+
+function saveStreak(){
+  localStorage.setItem(streakKey, JSON.stringify({streak, lastActiveDay}));
+}
+function loadStreak(){
+  const s = JSON.parse(localStorage.getItem(streakKey) || '{}');
+  streak = s.streak || 0;
+  lastActiveDay = s.lastActiveDay || null;
+  updateStreakUI();
+}
+
+/* ========== Render Functions ========== */
+function renderUser(){
+  const nameEl = safeGet('displayName');
+  const fpEl = safeGet('fpCount');
+  const pic = safeGet('profilePic');
+
+  if(!isAuthenticated || !currentUser){
+    if(nameEl) nameEl.innerText = 'Vui lòng đăng nhập';
+    if(fpEl) fpEl.innerText = '0';
+    if(pic && pic.src.includes('data:image/svg') ) {} // keep default
+    return;
+  }
+
+  if(nameEl) nameEl.innerText = currentUser.name || currentUser.email;
+  if(fpEl) fpEl.innerText = String(currentUser.fp || 0);
+  if(pic){
+    if(currentUser.avatar) pic.src = currentUser.avatar;
+    else if(pic.src && pic.src.length === 0) pic.src = safeGet('avatarImg')?.src || pic.src;
+  }
+  // sync per-user subjectSeconds
+  subjectSeconds = currentUser.subjectSeconds || {};
+  updateMiniProgress();
+  updateLevelUI();
+  updateStreakUI();
+}
+
+function updateMiniProgress(){
+  const el = safeGet('miniProgress');
+  if(!el) return;
+  const progress = Math.min(100, ((currentUser && currentUser.chain) ? (currentUser.chain % 100) : 0));
+  el.style.width = progress + '%';
+}
+
+function renderQuests(){
+  const el = safeGet('questsList');
+  if(!el) return;
+  el.innerHTML = '';
+  if(!quests || quests.length === 0){
+    el.innerHTML = '<div style="opacity:.8">Chưa có quest</div>';
+    return;
+  }
+  quests.forEach(q=>{
+    const div = document.createElement('div');
+    div.className = 'quest' + (q.done? ' done' : '');
+    div.style.display = 'flex';
+    div.style.justifyContent = 'space-between';
+    div.style.alignItems = 'center';
+    div.style.padding = '8px 0';
+    div.innerHTML = `<div>${q.text}</div><div><button class="btn ghost small" data-id="${q.id}">${q.done? '⟲' : '✓'}</button></div>`;
+    el.appendChild(div);
+    const btn = div.querySelector('button');
+    btn.addEventListener('click', ()=>{
+      q.done = !q.done;
+      // reward only if done and authenticated
+      if(q.done && isAuthenticated){ grantFP(5); showToast('Hoàn thành quest +5 FP', 'success'); }
+      localStorage.setItem('fe_quests', JSON.stringify(quests));
+      renderQuests();
+    });
+  });
+}
+
+function renderAchievements(){
+  const el = safeGet('achievementsRow');
+  if(!el) return;
+  el.innerHTML = '';
+  achievements.forEach(a=>{
+    const d = document.createElement('div');
+    d.className = 'badge legend';
+    d.style.padding = '8px 10px';
+    d.style.borderRadius = '10px';
+    d.style.background = 'rgba(255,255,255,0.04)';
+    d.innerText = a.name;
+    el.appendChild(d);
+  });
+}
+
+function renderStore(){
+  const el = safeGet('storeItems');
+  if(!el) return;
+  el.innerHTML = '';
+  const storeItems = [
+    {id:1,title:'Voucher sách - 50 FP',cost:50},
+    {id:2,title:'Theme độc quyền - 20 FP',cost:20},
+    {id:3,title:'Playlist Premium - 100 FP',cost:100},
+    {id:4,title:'Quyên góp - 10 FP',cost:10}
+  ];
+  storeItems.forEach(it=>{
+    const d = document.createElement('div');
+    d.className = 'badge';
+    d.style.minWidth = '140px';
+    d.style.display = 'flex';
+    d.style.flexDirection = 'column';
+    d.style.gap = '6px';
+    d.style.padding = '10px';
+    d.style.borderRadius = '10px';
+    d.style.background = 'rgba(255,255,255,0.03)';
+    d.innerHTML = `<div style="font-weight:700">${it.title}</div><div style="opacity:.85">${it.cost} FP</div><div><button class="btn ghost" data-id="${it.id}" data-cost="${it.cost}">Đổi</button></div>`;
+    el.appendChild(d);
+    d.querySelector('button').addEventListener('click', (ev)=>{
+      if(!isAuthenticated){ showToast('Hãy đăng nhập trước', 'warn'); return; }
+      const cost = Number(ev.target.dataset.cost || 0);
+      if((currentUser.fp || 0) < cost){ showToast('Không đủ FP', 'warn'); return; }
+      currentUser.fp -= cost;
+      if(it.id === 2) grantAchievement('theme_unlock','Theme unlocked','Bạn đã mở khóa theme mới');
+      saveCurrentUser();
+      renderUser();
+      renderLeaderboard();
+      showToast('Đổi thành công', 'success');
+    });
+  });
+}
+
+function renderLeaderboard(){
+  const el = safeGet('leaderboardList');
+  if(!el) return;
+  el.innerHTML = '';
+  users = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  const arr = Object.values(users).sort((a,b)=> (b.fp||0) - (a.fp||0)).slice(0,10);
+  if(arr.length === 0){ el.innerHTML = '<li style="opacity:.8">Chưa có dữ liệu</li>'; return; }
+  arr.forEach(u=>{
+    const li = document.createElement('li');
+    li.style.padding = '8px 6px';
+    li.style.borderBottom = '1px dashed rgba(255,255,255,0.03)';
+    li.innerHTML = `<span>${u.name || u.email}</span><strong style="float:right">${u.fp||0} FP</strong>`;
+    el.appendChild(li);
+  });
+}
+
+/* ========== Auth (Register / Login) ========== */
+function switchToRegister(){
+  const r = safeGet('authRegisterForm'); const l = safeGet('authLoginForm');
+  if(r && l){ r.style.display = 'block'; l.style.display = 'none'; }
+}
+function switchToLogin(){
+  const r = safeGet('authRegisterForm'); const l = safeGet('authLoginForm');
+  if(r && l){ r.style.display = 'none'; l.style.display = 'block'; }
+}
+
+function registerUser(){
+  const email = (safeGet('regEmail')?.value || '').trim().toLowerCase();
+  const p1 = safeGet('regPass1')?.value || '';
+  const p2 = safeGet('regPass2')?.value || '';
+  const name = (safeGet('regName')?.value || '').trim();
+  if(!email || !p1 || !p2 || !name){ alert('Hãy điền đầy đủ thông tin'); return; }
+  if(p1 !== p2){ alert('Mật khẩu nhập lại không khớp'); return; }
+  users = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  if(users[email]){ alert('Email đã tồn tại'); return; }
+  // create user
+  users[email] = { name, email, password: p1, fp: 0, chain: 0, subjectSeconds: {}, avatar: null };
+  saveUsersToStorage();
+  // set as current
+  currentUser = users[email];
+  isAuthenticated = true;
+  // persist and init UI
+  saveCurrentUser();
+  loadAppState();
+  loadStreak(); // load streak data
+  renderUser();
+  renderQuests();
+  renderStore();
+  renderLeaderboard();
+  renderAchievements();
+  // hide modal / show app
+  safeGet('authModal').style.display = 'none';
+  safeGet('mainContent').style.display = 'block';
+  showToast('Đăng ký thành công!', 'success');
+}
+
+function loginUser(){
+  const email = (safeGet('loginEmail')?.value || '').trim().toLowerCase();
+  const pass = safeGet('loginPass')?.value || '';
+  if(!email || !pass){ alert('Hãy nhập đầy đủ thông tin'); return; }
+  users = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  if(!users[email]){ alert('Tài khoản không tồn tại'); return; }
+  if(users[email].password !== pass){ alert('Mật khẩu sai'); return; }
+  currentUser = users[email];
+  isAuthenticated = true;
+  // load user's personal data
+  subjectSeconds = currentUser.subjectSeconds || {};
+  // hide modal show app
+  safeGet('authModal').style.display = 'none';
+  safeGet('mainContent').style.display = 'block';
+  loadAppState();
+  loadStreak();
+  renderUser();
+  renderQuests();
+  renderStore();
+  renderLeaderboard();
+  renderAchievements();
+  showToast('Đăng nhập thành công', 'success');
+}
+
+function logoutUser(){
+  isAuthenticated = false;
+  currentUser = null;
+  safeGet('authModal').style.display = 'flex';
+  safeGet('mainContent').style.display = 'none';
+  switchToLogin();
+  showToast('Đã đăng xuất', 'info');
+}
+
+/* ========== Save current user back to users map ========== */
+function saveCurrentUser(){
+  if(!currentUser || !currentUser.email) return;
+  // ensure we keep per-user subjectSeconds
+  currentUser.subjectSeconds = subjectSeconds || {};
+  users = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  users[currentUser.email] = currentUser;
+  localStorage.setItem(storageKey, JSON.stringify(users));
+  saveAppState();
+}
+
+/* ========== Achievements & FP ========== */
+function grantAchievement(key, name, desc){
+  if(achievements.find(a=>a.key===key)) return;
+  achievements.push({key, name, desc, date: Date.now()});
+  localStorage.setItem('fe_achievements', JSON.stringify(achievements));
+  renderAchievements();
+  showBigPopup(name, desc);
+  try{ safeGet('audio-level')?.play()?.catch(()=>{}); }catch(e){}
+}
+
+function grantFP(n){
+  if(!isAuthenticated || !currentUser) return;
+  currentUser.fp = (currentUser.fp || 0) + n;
+  saveCurrentUser();
+  renderUser();
+  renderLeaderboard();
+}
+
+/* ========== Timer / Focus Logic ========== */
+function startFocus(){
+  if(!isAuthenticated){ showToast('Vui lòng đăng nhập để bắt đầu', 'warn'); return; }
+  if(isFocusing){ showToast('Phiên đang chạy'); return; }
+  const mins = Number(safeGet('durationSel')?.value || 25);
+  targetSec = mins * 60;
+  totalSec = 0;
+  isFocusing = true;
+  subject = safeGet('subjectSel')?.value || 'Chung';
+  // show lock overlay
+  safeGet('lockOverlay').style.display = 'flex';
+  updateProgressUI();
+  // play lofi if available
+  try{ safeGet('audio-lofi')?.play()?.catch(()=>{}); } catch(e){}
+  focusTimer = setInterval(()=>{
+    totalSec++;
+    // update subjectSeconds per user
+    subjectSeconds[subject] = (subjectSeconds[subject] || 0) + 1;
+    updateProgressUI();
+    if(totalSec % 60 === 0 && navigator.vibrate) navigator.vibrate(40);
+    if(document.hidden) handleBlur();
+    if(totalSec >= targetSec) endSession(true);
+  }, 1000);
+}
+
+function updateProgressUI(){
+  const rem = Math.max(0, targetSec - totalSec);
+  const mm = String(Math.floor(rem/60)).padStart(2,'0');
+  const ss = String(rem % 60).padStart(2,'0');
+  safeGet('timeLabel') && (safeGet('timeLabel').innerText = mm + ':' + ss);
+  const pct = Math.min(1, totalSec / targetSec);
+  const circ = safeGet('progressCircle');
+  if(circ){
+    const dash = 2 * Math.PI * 45;
+    circ.style.strokeDashoffset = String(dash * (1 - pct));
+  }
+  safeGet('progressSub') && (safeGet('progressSub').innerText = Math.floor(pct*100) + '%');
+}
+
+function endSession(success){
+  if(!isFocusing) return;
+  clearInterval(focusTimer);
+  isFocusing = false;
+  safeGet('lockOverlay').style.display = 'none';
+  if(success){
+    const gained = Math.floor(targetSec / 60);
+    // award FP
+    if(isAuthenticated && currentUser){
+      currentUser.fp = (currentUser.fp || 0) + gained;
+      currentUser.chain = (currentUser.chain || 0) + gained;
+      cycleCount++;
+      // STREAK logic: only once per day increment
+      const today = new Date().toDateString();
+      if(lastActiveDay !== today){
+        // if yesterday
+        if(lastActiveDay && (new Date(today) - new Date(lastActiveDay) === 86400000)){
+          streak = (streak || 0) + 1;
+        } else {
+          streak = 1;
+        }
+        lastActiveDay = today;
+        saveStreak();
+        updateStreakUI();
+        // milestone rewards
+        if(streak === 7) { grantFP(20); grantAchievement('streak_7','7 ngày streak','Bạn giữ streak 7 ngày liên tiếp'); }
+        if(streak === 30) { grantFP(100); grantAchievement('streak_30','30 ngày streak','Bạn giữ streak 30 ngày liên tiếp'); }
+      }
+    }
+    try{ safeGet('audio-complete')?.play()?.catch(()=>{}); }catch(e){}
+    showToast('Hoàn thành +'+gained+' FP', 'success');
+    checkLevelUp();
+    if(cycleCount >= cyclesGoal){ grantAchievement('pomodoro_master','Pomodoro Master','Hoàn thành 4 cycles'); cycleCount = 0; }
+  } else {
+    if(currentUser) currentUser.chain = Math.max(0, Math.floor((currentUser.chain || 0) / 2));
+    try{ safeGet('audio-fail')?.play()?.catch(()=>{}); }catch(e){}
+    if(navigator.vibrate) navigator.vibrate([200,100,200]);
+    showToast('Phiên bị hủy', 'warn');
+  }
+  saveCurrentUser();
+  renderUser();
+  renderLeaderboard();
+  updateMiniProgress();
+  updateLevelUI();
+}
+
+function skipSession(){
+  if(isFocusing) endSession(false);
+  else showToast('Không có phiên đang chạy');
+}
+
+function handleBlur(){
+  // treat as cancelled
+  endSession(false);
+}
+
+/* ========== Level / XP ========== */
+function getLevel(){
+  const totalSecs = Object.values(subjectSeconds || {}).reduce((s,v)=>s+v,0);
+  return Math.floor(totalSecs / 1800) + 1; // every 30min = +1 level
+}
+function checkLevelUp(){
+  const lvl = getLevel();
+  if(lvl > lastLevel){
+    lastLevel = lvl;
+    grantAchievement('level_'+lvl, 'LEVEL ' + lvl, 'Bạn đã đạt level ' + lvl);
+    try{ safeGet('audio-level')?.play()?.catch(()=>{}); }catch(e){}
+  }
+  updateLevelUI();
+}
+function updateLevelUI(){
+  safeGet('levelBadge') && (safeGet('levelBadge').innerText = getLevel());
+}
+
+/* ========== Streak UI ========== */
+function updateStreakUI(){
+  const el = safeGet('streakCount');
+  if(el) el.innerText = String(streak || 0);
+}
+
+/* ========== Initialization ========== */
+function wireUI(){
+  // auth form switches
+  safeGet('openRegisterInline')?.addEventListener('click', switchToRegister);
+  safeGet('openLoginInline')?.addEventListener('click', switchToLogin);
+  safeGet('backToLogin')?.addEventListener('click', switchToLogin);
+
+  // auth actions
+  safeGet('registerBtn')?.addEventListener('click', registerUser);
+  safeGet('loginBtn')?.addEventListener('click', loginUser);
+
+  // quick "demo" button opens register UI
+  safeGet('demoBtn')?.addEventListener('click', switchToRegister);
+
+  // main UI controls
+  safeGet('addQuest')?.addEventListener('click', ()=>{
+    const t = (safeGet('newQuestText')?.value || '').trim();
+    if(!t) return;
+    quests.push({id: Date.now(), text: t, done: false});
+    localStorage.setItem('fe_quests', JSON.stringify(quests));
+    renderQuests();
+    showToast('Đã thêm quest');
+    safeGet('newQuestText').value = '';
+  });
+
+  safeGet('startBtn')?.addEventListener('click', startFocus);
+  safeGet('stopBtn')?.addEventListener('click', ()=> endSession(false));
+  safeGet('skipBtn')?.addEventListener('click', skipSession);
+
+  // avatar upload
+  safeGet('avatarBtn')?.addEventListener('click', ()=>{
+    const f = document.createElement('input');
+    f.type = 'file'; f.accept = 'image/*';
+    f.onchange = (ev)=>{
+      const file = ev.target.files[0];
+      if(!file) return;
+      const r = new FileReader();
+      r.onload = ()=> {
+        const url = r.result;
+        safeGet('avatarImg') && (safeGet('avatarImg').src = url);
+        safeGet('profilePic') && (safeGet('profilePic').src = url);
+        if(currentUser){ currentUser.avatar = url; saveCurrentUser(); }
+      };
+      r.readAsDataURL(file);
+    };
+    f.click();
+  });
+
+  // toggle theme
+  safeGet('theme')?.addEventListener('change', (e)=> { document.body.style.background = ''; document.body.setAttribute('data-theme', e.target.value); });
+  safeGet('toggle-theme')?.addEventListener('click', ()=>{
+    const prefers = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.setAttribute('data-theme', prefers ? 'cyberpunk' : 'ocean');
+    showToast('Theme updated');
+  });
+
+  // unlock overlay
+  safeGet('unlockBtn')?.addEventListener('click', ()=> { safeGet('lockOverlay').style.display = 'none'; });
+
+  // close level popup
+  safeGet('bigClose')?.addEventListener('click', closeBigPopup);
+
+  // streak click
+  safeGet('streakBox')?.addEventListener('click', ()=>{
+    if(!isAuthenticated){ showToast('Đăng nhập để xem streak', 'warn'); return; }
+    showBigPopup('Chuỗi tập trung', 'Bạn đã có chuỗi ' + (streak || 0) + ' ngày. Hoàn thành ít nhất 1 phiên mỗi ngày để duy trì.');
+  });
+
+  // create logout button in header
+  (function createLogoutBtn(){
+    const header = document.querySelector('.header');
+    if(!header) return;
+    const btn = document.createElement('button');
+    btn.innerText = 'Đăng xuất';
+    btn.className = 'btn ghost';
+    btn.style.marginLeft = '8px';
+    btn.addEventListener('click', ()=>{
+      if(confirm('Bạn muốn đăng xuất?')) logoutUser();
+    });
+    // append near toggle theme
+    const controls = header.querySelector('div[style*="display:flex"]');
+    if(controls) controls.appendChild(btn);
+  })();
+}
+
+/* ========== Load/Init App ========== */
+function init(){
+  // wire UI events
+  wireUI();
+
+  // load saved data
+  users = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  loadAppState();
+  loadStreak();
+
+  // if any user is already logged-in? (No persistent "session" stored)
+  // We require explicit login, so show modal until login
+  safeGet('authModal').style.display = 'flex';
+  safeGet('mainContent').style.display = 'none';
+  switchToLogin();
+
+  // render lists (will update after login)
+  renderQuests();
+  renderStore();
+  renderAchievements();
+  renderLeaderboard();
+
+  // small seed if first run
+  if(!localStorage.getItem('fe_seeded')){
+    quests = [{id:1,text:'Học Toán 25 phút',done:false},{id:2,text:'Đọc 20 trang sách',done:false}];
+    achievements = [];
+    localStorage.setItem('fe_quests', JSON.stringify(quests));
+    localStorage.setItem('fe_achievements', JSON.stringify(achievements));
+    localStorage.setItem('fe_seeded', '1');
+    renderQuests();
+  }
+}
+
+/* ========== Init on load ========== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  init();
+});
+</script>
+
+</body>
+</html>
